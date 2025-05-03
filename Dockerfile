@@ -3,7 +3,8 @@ COPY ./pyproject.toml ./
 RUN apk add --no-cache --update build-base git python3-dev
 RUN pip install poetry
 RUN poetry config virtualenvs.create false
-RUN poetry install --no-dev
+
+RUN poetry install --only main --no-root
 
 FROM python:3.11-alpine
 ARG APP_VERSION
@@ -16,4 +17,4 @@ COPY --from=base /usr/local/bin /usr/local/bin
 COPY . /home/app/
 EXPOSE 8000
 EXPOSE 465
-CMD [ "gunicorn", "--config", "/home/app/gunicorn_conf.py", "src.details:app" ]
+CMD [ "gunicorn", "--config", "/home/app/gunicorn_conf.py", "src.default:app" ]
